@@ -1,28 +1,31 @@
-import {  Box, Image, Text} from '@chakra-ui/react'
-import GoogleMapReact from "google-map-react"
-import { IoLocation } from "react-icons/io5";
+import { Box, Image, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
+import GoogleMapReact from "google-map-react";
+import { IoLocation } from "react-icons/io5";
 import { BiX } from "react-icons/bi";
 
-const Map = ({coordinates,setcoordinates,setBounds,places}) => {
+const Map = ({ coordinates, setCoordinates, setBounds, places }) => {
   const [isCard, setIsCard] = useState(false);
-const [cardData, setCardData] = useState(null);
-  return (<Box width={'full'} height={'full'}>
-   <GoogleMapReact
-    bootstrapURLKeys={{key: "AIzaSyAH7aCCqnZzcjtZUTddtKor6yybHTlT8ks"}}
-    defaultCenter={coordinates}
-    center={coordinates}
-    defaultZoom={10}
-    margin={[50,50,50,50]}
-    options={""}
-    onChange={(e)=>{
-      setcoordinates({lat:e.center.lat,lng:e.center.lng});
-      setBounds({ne:e.marginBounds.ne,sw:e.marginBounds.sw})
-    }}
-    onChildClick={()=>{}}
-    
-    >
-      {places?.map((place, i) => (
+  const [cardData, setCardData] = useState(null);
+  return (
+    <Box width={"full"} height={"full"}>
+      <GoogleMapReact
+        bootstrapURLKeys={{ key: "AIzaSyAH7aCCqnZzcjtZUTddtKor6yybHTlT8ks" }}
+        defaultCenter={coordinates}
+        center={coordinates}
+        defaultZoom={10}
+        margin={[50, 50, 50, 50]}
+        options={""}
+        onChange={(e) => {
+          setCoordinates({ lat: e.center.lat, lng: e.center.lng });
+          setBounds({ ne: e.marginBounds.ne, sw: e.marginBounds.sw });
+        }}
+        onChildClick={(child) => {
+          setCardData(places[child]);
+          setIsCard(true);
+        }}
+      >
+        {places?.map((place, i) => (
           <Box
             lat={Number(place.latitude)}
             lng={Number(place.longitude)}
@@ -32,7 +35,8 @@ const [cardData, setCardData] = useState(null);
             <IoLocation color="red" fontSize={30} />
           </Box>
         ))}
-         {isCard && (
+
+        {isCard && (
           <Box
             width={"200px"}
             height={"150px"}
@@ -85,9 +89,9 @@ const [cardData, setCardData] = useState(null);
             </Box>
           </Box>
         )}
-    </GoogleMapReact>
-  </Box>
-  )
-}
+      </GoogleMapReact>
+    </Box>
+  );
+};
 
-export default Map
+export default Map;
