@@ -1,80 +1,70 @@
-import { Flex } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import Header from "../components/Header";
-import List from "../components/List";
-import Map from "../components/Map";
-import PlaceDetail from "../components/PlaceDetail";
-import { getPlacesData } from "./api";
+import { filter, Flex } from '@chakra-ui/react'
+import Header from '../components/Header'
+import List from '../components/List'
+import Map from '../components/Map'
+import script from 'next/script'
+import PlaceDetail from '../components/PlaceDetail'
+import { useEffect, useState } from 'react'
+import { getPlacesData } from './api'
 import Head from "next/head";
-
 const Home = () => {
-  const [places, setPlaces] = useState([]);
-  const [filteredPlaces, setFilteredPlaces] = useState([]);
-  const [coordinates, setCoordinates] = useState({});
-  const [bounds, setBounds] = useState(null);
-  const [type, setType] = useState("restaurants");
-  const [ratings, setRatings] = useState("");
+  const [places, setplaces] = useState([])
+  const [bounds, setBounds] = useState(null)
+  const [coordinates, setcoordinates] = useState([])
+  const [type, settype] = useState('restaurants')
+  const [ratings, setratings] = useState("")
   const [isLoading, setIsLoading] = useState(false);
-
+  const [filteredPlaces, setfilteredPlaces] = useState([])
   useEffect(() => {
-    // get the users current location on intial login
+    //Current Location
 
-    navigator.geolocation.getCurrentPosition(
-      ({ coords: { latitude, longitude } }) => {
-        console.log({ latitude, longitude });
-        setCoordinates({ lat: latitude, lng: longitude });
-      }
-    );
-  }, []);
-
+    navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
+      console.log({ latitude, longitude })
+      setcoordinates({ lat: latitude, lng: longitude })
+    })
+  }, [])
   useEffect(() => {
     const filteredData = places.filter((place) => place.rating > ratings);
-    setFilteredPlaces(filteredData);
-    console.log({ ratings });
-  }, [ratings]);
+    setfilteredPlaces(filteredData);
+  }, [ratings])
 
   useEffect(() => {
-    setIsLoading(true);
+    setIsLoading(true)
+
     getPlacesData(type, bounds?.sw, bounds?.ne).then((data) => {
-      console.log(data);
-      setPlaces(data);
+      setplaces(data);
       setIsLoading(false);
+
     });
-  }, [type, coordinates, bounds]);
+  }, [type, coordinates, bounds])
 
-  return (
-    <Flex
-      justifyContent={"center"}
-      alignItems={"center"}
-      width={"100vw"}
-      height={"100vh"}
-      maxWidth={"100vw"}
-      maxHeight={"100vh"}
-      position={"relative"}
-    >
-      <Head>
-        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyAH7aCCqnZzcjtZUTddtKor6yybHTlT8ks"></script>
-      </Head>
+  return <Flex
+    justifyContent={'center'}
+    alignItems={'center'}
+    width={'100vw'}
+    height={'100vh'}
+    maxWidth={'100vw'}
+    maxHeight={'100vh'}
+    position={'relative'}
+  >
+    <Head>
+      <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyAH7aCCqnZzcjtZUTddtKor6yybHTlT8ks"></script>
+    </Head>
+    <Header
+      settype={settype}
+      setratings={setratings}
+      setcoordinates={setcoordinates}
+    />
 
-      <Header
-        setType={setType}
-        setRatings={setRatings}
-        setCoordinates={setCoordinates}
-      />
+    <List places={filteredPlaces.length ? filteredPlaces : places} isLoading={isLoading} />
 
-      <List
-        places={filteredPlaces.length ? filteredPlaces : places}
-        isLoading={isLoading}
-      />
+    <Map
+      setcoordinates={setcoordinates}
+      coordinates={coordinates}
+      setBounds={setBounds}
+      places={filteredPlaces.length ? filteredPlaces : places}
+    />
 
-      <Map
-        setCoordinates={setCoordinates}
-        coordinates={coordinates}
-        setBounds={setBounds}
-        places={filteredPlaces.length ? filteredPlaces : places}
-      />
-    </Flex>
-  );
-};
-
+  </Flex>
+}
 export default Home;
