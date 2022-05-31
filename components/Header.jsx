@@ -42,8 +42,8 @@ const Header = ({ settype, setratings, setcoordinates, }) => {
                     <InputGroup
                         width={'35vw'}
                         shadow={'lg'}>
-                        <InputRightElement>
-                            pointerEvents={'none'}
+                        <InputRightElement pointerEvents={'none'}>
+                            
                             <BiSearch color="gray" fontSize={20} />
                         </InputRightElement>
                         <Input
